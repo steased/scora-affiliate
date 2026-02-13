@@ -94,16 +94,16 @@ export default function Home() {
                 </div>
                 <form className="grid gap-4" onSubmit={handleLogin}>
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium text-zinc-700" htmlFor="email">
-                      E-mailadres
-                    </label>
-                    <input
-                      id="email"
-                      type="email"
-                      required
-                      placeholder="jij@scora.app"
-                      className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
-                    />
+                  <label className="text-sm font-medium text-zinc-700" htmlFor="username">
+                    Gebruikersnaam
+                  </label>
+                  <input
+                    id="username"
+                    type="text"
+                    required
+                    placeholder="gebruikersnaam"
+                    className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
+                  />
                   </div>
                   <div className="grid gap-2">
                     <label
