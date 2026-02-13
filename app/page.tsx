@@ -87,9 +87,9 @@ export default function Home() {
             <div className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
               <div className="flex flex-col gap-4">
                 <div>
-                  <p className="text-sm font-medium text-zinc-500">Welcome back</p>
+                  <p className="text-sm font-medium text-zinc-500">Welkom terug</p>
                   <h1 className="text-xl font-semibold text-zinc-900">
-                    Log in to your dashboard
+                    Login bij je affiliate dashboard
                   </h1>
                 </div>
                 <form className="grid gap-4" onSubmit={handleLogin}>
@@ -127,9 +127,6 @@ export default function Home() {
                     Inloggen
                   </button>
                 </form>
-                <p className="text-xs text-zinc-500">
-                  Geen account? Neem contact op via support@getscora.app.
-                </p>
               </div>
             </div>
           </div>
