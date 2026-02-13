@@ -68,7 +68,7 @@ export default function Home() {
   if (!isAuthed) {
     return (
       <div className="min-h-screen bg-white">
-        <div className="grid min-h-screen lg:grid-cols-[1.15fr_1fr]">
+        <div className="grid min-h-screen lg:grid-cols-[1fr_3fr]">
           <div className="relative hidden min-h-screen lg:block">
             <Image
               src="/image12.png"
@@ -80,9 +80,6 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-white/5 to-transparent" />
             <div className="absolute left-8 top-8 flex items-center gap-3">
               <Image src="/logo-7.png" alt="Scora" width={44} height={44} />
-              <span className="text-sm font-semibold text-white drop-shadow">
-                Scora
-              </span>
             </div>
           </div>
 
