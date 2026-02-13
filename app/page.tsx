@@ -67,63 +67,73 @@ export default function Home() {
 
   if (!isAuthed) {
     return (
-      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(125,162,255,0.35),_transparent_45%),radial-gradient(circle_at_bottom,_rgba(255,175,221,0.35),_transparent_45%)]">
-        <div className="mx-auto flex min-h-screen w-full max-w-4xl items-center px-6 py-16">
-          <div className="w-full rounded-[32px] border border-white/50 bg-white/80 p-10 shadow-[0_20px_60px_rgba(15,23,42,0.12)] backdrop-blur">
-            <div className="flex flex-col gap-6">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-900 text-white">
-                  S
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-zinc-500">Scora Affiliate</p>
-                  <h1 className="text-2xl font-semibold text-zinc-900">
-                    Log in to your dashboard
-                  </h1>
+      <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(107,162,255,0.45),_transparent_45%),radial-gradient(circle_at_bottom,_rgba(170,143,255,0.4),_transparent_45%)] px-6 py-16">
+        <div className="mx-auto w-full max-w-5xl rounded-[36px] border border-white/60 bg-white/80 p-4 shadow-[0_30px_80px_rgba(15,23,42,0.14)] backdrop-blur">
+          <div className="grid min-h-[560px] gap-6 overflow-hidden rounded-[28px] lg:grid-cols-[1.1fr_1fr]">
+            <div className="relative min-h-[260px] overflow-hidden rounded-[26px] bg-gradient-to-br from-emerald-50 via-sky-50 to-purple-100 lg:min-h-full">
+              <Image
+                src="/image1.jpg"
+                alt="Scora affiliate preview"
+                fill
+                className="object-cover"
+                priority
+              />
+              <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/10 to-transparent" />
+              <div className="absolute left-6 top-6 flex items-center gap-3">
+                <Image src="/logo.png" alt="Scora" width={40} height={40} />
+                <span className="text-sm font-semibold text-zinc-800">Scora</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-center px-4 py-10 sm:px-10">
+              <div className="w-full max-w-sm rounded-2xl border border-zinc-200 bg-white p-6 shadow-[0_20px_40px_rgba(15,23,42,0.08)]">
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <p className="text-sm font-medium text-zinc-500">Welcome back</p>
+                    <h1 className="text-xl font-semibold text-zinc-900">
+                      Log in to your dashboard
+                    </h1>
+                  </div>
+                  <form className="grid gap-4" onSubmit={handleLogin}>
+                    <div className="grid gap-2">
+                      <label className="text-sm font-medium text-zinc-700" htmlFor="email">
+                        E-mailadres
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        required
+                        placeholder="jij@scora.app"
+                        className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <label
+                        className="text-sm font-medium text-zinc-700"
+                        htmlFor="password"
+                      >
+                        Wachtwoord
+                      </label>
+                      <input
+                        id="password"
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="h-11 rounded-xl bg-zinc-900 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                    >
+                      Inloggen
+                    </button>
+                  </form>
+                  <p className="text-xs text-zinc-500">
+                    Geen account? Neem contact op via support@getscora.app.
+                  </p>
                 </div>
               </div>
-              <p className="text-base text-zinc-600">
-                Gebruik je accountgegevens om toegang te krijgen tot je affiliate
-                prestaties en uitbetalingen.
-              </p>
-              <form className="grid gap-4" onSubmit={handleLogin}>
-                <div className="grid gap-2">
-                  <label className="text-sm font-medium text-zinc-700" htmlFor="email">
-                    E-mailadres
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    placeholder="jij@scora.app"
-                    className="h-12 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <label
-                    className="text-sm font-medium text-zinc-700"
-                    htmlFor="password"
-                  >
-                    Wachtwoord
-                  </label>
-                  <input
-                    id="password"
-                    type="password"
-                    required
-                    placeholder="••••••••"
-                    className="h-12 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="h-12 rounded-xl bg-zinc-900 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                >
-                  Inloggen
-                </button>
-              </form>
-              <p className="text-xs text-zinc-500">
-                Geen account? Neem contact op via support@getscora.app.
-              </p>
             </div>
           </div>
         </div>
