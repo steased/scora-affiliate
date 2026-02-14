@@ -113,6 +113,7 @@ export default function Home() {
         const ok = await loadProfile(data.session.user.id);
         if (!ok) {
           await supabase.auth.signOut();
+          setLoginError("Account niet gevonden. Neem contact op met support.");
         }
       }
       setSessionLoading(false);
@@ -124,6 +125,7 @@ export default function Home() {
           const ok = await loadProfile(session.user.id);
           if (!ok) {
             await supabase.auth.signOut();
+            setLoginError("Account niet gevonden. Neem contact op met support.");
           }
         } else {
           setProfile(null);
