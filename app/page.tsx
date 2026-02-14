@@ -154,7 +154,7 @@ export default function Home() {
     setProfile(profileData as Profile);
 
     const { data: statsData } = await supabase
-      .from("affiliate_stats")
+      .from("affiliates")
       .select("month, referrals_count")
       .eq("user_id", userId);
 
