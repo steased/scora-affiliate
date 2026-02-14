@@ -21,6 +21,7 @@ export default function DashboardShell({
   const pathname = usePathname();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [passwordModal, setPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,7 +30,13 @@ export default function DashboardShell({
 
   useEffect(() => {
     const init = async () => {
-      const { data } = await supabase.auth.getSession();
+      setAuthError(null);
+      let { data } = await supabase.auth.getSession();
+      if (!data.session?.user) {
+        await new Promise((r) => setTimeout(r, 200));
+        const retry = await supabase.auth.getSession();
+        data = retry.data;
+      }
       if (!data.session?.user) {
         router.replace("/login");
         return;
@@ -40,8 +47,9 @@ export default function DashboardShell({
         .eq("id", data.session.user.id)
         .single();
       if (error || !profileData) {
-        await supabase.auth.signOut();
-        router.replace("/login");
+        const msg = error?.message ?? "Geen profiel gevonden";
+        setAuthError(`${msg} (code: ${error?.code ?? "—"}). Controleer of de profile.id in Supabase exact gelijk is aan de User UID onder Authentication → Users.`);
+        setLoading(false);
         return;
       }
       setProfile(profileData as Profile);
@@ -99,12 +107,34 @@ export default function DashboardShell({
     router.replace("/login");
   };
 
-  if (loading || !profile) {
+  if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-50 text-sm text-neutral-500">
         Laden...
       </div>
     );
+  }
+
+  if (authError) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-4">
+        <div className="max-w-md rounded-xl border border-red-200 bg-white p-6 text-sm">
+          <p className="font-medium text-red-800">Probleem bij laden profiel</p>
+          <p className="mt-2 text-neutral-600">{authError}</p>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-4 rounded-lg border border-neutral-200 px-3 py-2 text-neutral-700 hover:bg-neutral-50"
+          >
+            Uitloggen
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return null;
   }
 
   return (

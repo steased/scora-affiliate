@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -16,7 +14,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError(null);
     setLoading(true);
-    const { error: signInError } = await supabase.auth.signInWithPassword({
+    const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email: email.trim(),
       password,
     });
@@ -25,8 +23,12 @@ export default function LoginPage() {
       setError("Inloggen mislukt. Controleer je e-mail en wachtwoord.");
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    if (!data.session) {
+      setError("Inloggen mislukt. Probeer het opnieuw.");
+      return;
+    }
+    // Full page nav zodat de sessie in localStorage staat voordat dashboard laadt
+    window.location.href = "/dashboard";
   };
 
   return (
