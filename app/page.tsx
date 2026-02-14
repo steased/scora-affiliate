@@ -121,7 +121,10 @@ export default function Home() {
     const init = async () => {
       const { data } = await supabase.auth.getSession();
       if (data.session?.user) {
-        await loadProfile(data.session.user.id);
+        const ok = await loadProfile(data.session.user.id);
+        if (!ok) {
+          await supabase.auth.signOut();
+        }
       }
       setSessionLoading(false);
     };
@@ -129,7 +132,10 @@ export default function Home() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         if (session?.user) {
-          await loadProfile(session.user.id);
+          const ok = await loadProfile(session.user.id);
+          if (!ok) {
+            await supabase.auth.signOut();
+          }
         } else {
           setProfile(null);
           setStats([]);
@@ -153,7 +159,7 @@ export default function Home() {
 
     if (error) {
       setProfile(null);
-      return;
+      return false;
     }
 
     setProfile(profileData as Profile);
@@ -168,6 +174,8 @@ export default function Home() {
     } else {
       setStats([]);
     }
+
+    return true;
   };
 
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -194,13 +202,8 @@ export default function Home() {
     const { data: sessionData } = await supabase.auth.getSession();
     const userId = sessionData.session?.user?.id;
     if (userId) {
-      const { data: profileData, error: profileError } = await supabase
-        .from("profiles")
-        .select("id, username, role, must_change_password")
-        .eq("id", userId)
-        .single();
-
-      if (profileError || !profileData) {
+      const ok = await loadProfile(userId);
+      if (!ok) {
         await supabase.auth.signOut();
         setLoginError("Account niet gevonden. Neem contact op met support.");
       }
