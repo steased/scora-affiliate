@@ -50,8 +50,6 @@ const products = [
   },
 ];
 
-const EMAIL_DOMAIN = "affiliate.getscora.app";
-
 type Profile = {
   id: string;
   username: string;
@@ -76,7 +74,7 @@ export default function Home() {
   const [sessionLoading, setSessionLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<AffiliateStat[]>([]);
-  const [loginUsername, setLoginUsername] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
   const [passwordModal, setPasswordModal] = useState(true);
@@ -84,12 +82,13 @@ export default function Home() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSaving, setPasswordSaving] = useState(false);
-  const [adminUsername, setAdminUsername] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminRefCode, setAdminRefCode] = useState("");
   const [adminRole, setAdminRole] = useState("affiliate");
   const [adminResult, setAdminResult] = useState<{
     email: string;
     tempPassword: string;
-    username: string;
+    refCode: string;
   } | null>(null);
   const [adminError, setAdminError] = useState<string | null>(null);
   const [adminLoading, setAdminLoading] = useState(false);
@@ -182,15 +181,8 @@ export default function Home() {
     event.preventDefault();
     setLoginError(null);
 
-    const normalized = normalizeUsername(loginUsername);
-    if (!normalized) {
-      setLoginError("Vul een geldige gebruikersnaam in.");
-      return;
-    }
-
-    const email = `${normalized}@${EMAIL_DOMAIN}`;
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: loginEmail.trim(),
       password: loginPassword,
     });
 
@@ -259,9 +251,15 @@ export default function Home() {
     setAdminResult(null);
     setAdminLoading(true);
 
-    const normalized = normalizeUsername(adminUsername);
-    if (!normalized) {
-      setAdminError("Vul een geldige gebruikersnaam in.");
+    const normalizedRef = normalizeUsername(adminRefCode);
+    if (!normalizedRef) {
+      setAdminError("Vul een geldige ref code in.");
+      setAdminLoading(false);
+      return;
+    }
+
+    if (!adminEmail.trim()) {
+      setAdminError("Vul een geldig e-mailadres in.");
       setAdminLoading(false);
       return;
     }
@@ -269,7 +267,11 @@ export default function Home() {
     const response = await fetch("/api/admin/create-user", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: normalized, role: adminRole }),
+      body: JSON.stringify({
+        email: adminEmail.trim(),
+        refCode: normalizedRef,
+        role: adminRole,
+      }),
     });
 
     const result = await response.json();
@@ -280,7 +282,8 @@ export default function Home() {
     }
 
     setAdminResult(result);
-    setAdminUsername("");
+    setAdminEmail("");
+    setAdminRefCode("");
     setAdminLoading(false);
   };
 
@@ -323,16 +326,16 @@ export default function Home() {
                 </div>
                 <form className="grid gap-4" onSubmit={handleLogin}>
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium text-zinc-700" htmlFor="username">
-                      Gebruikersnaam
+                    <label className="text-sm font-medium text-zinc-700" htmlFor="email">
+                      E-mailadres
                     </label>
                     <input
-                      id="username"
-                      type="text"
+                      id="email"
+                      type="email"
                       required
-                      value={loginUsername}
-                      onChange={(event) => setLoginUsername(event.target.value)}
-                      placeholder="gebruikersnaam"
+                      value={loginEmail}
+                      onChange={(event) => setLoginEmail(event.target.value)}
+                      placeholder="jij@scora.app"
                       className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
                     />
                   </div>
@@ -521,9 +524,17 @@ export default function Home() {
                   </p>
                   <form className="mt-4 grid gap-3" onSubmit={handleAdminCreate}>
                     <input
-                      value={adminUsername}
-                      onChange={(event) => setAdminUsername(event.target.value)}
-                      placeholder="Gebruikersnaam (ref code)"
+                      value={adminEmail}
+                      onChange={(event) => setAdminEmail(event.target.value)}
+                      placeholder="E-mailadres"
+                      className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
+                      required
+                      type="email"
+                    />
+                    <input
+                      value={adminRefCode}
+                      onChange={(event) => setAdminRefCode(event.target.value)}
+                      placeholder="Ref code"
                       className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
                       required
                     />
@@ -542,7 +553,7 @@ export default function Home() {
                     ) : null}
                     {adminResult ? (
                       <div className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-                        <p>Account aangemaakt voor {adminResult.username}</p>
+                        <p>Account aangemaakt voor {adminResult.refCode}</p>
                         <p>Email: {adminResult.email}</p>
                         <p>Tijdelijk wachtwoord: {adminResult.tempPassword}</p>
                       </div>

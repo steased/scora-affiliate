@@ -30,19 +30,22 @@ function normalizeUsername(username: string) {
 }
 
 export async function POST(request: Request) {
-  const { username, role } = await request.json();
+  const { email, refCode, role } = await request.json();
 
-  if (!username || typeof username !== "string") {
-    return NextResponse.json({ error: "Missing username" }, { status: 400 });
+  if (!email || typeof email !== "string") {
+    return NextResponse.json({ error: "Missing email" }, { status: 400 });
   }
 
-  const normalized = normalizeUsername(username);
+  if (!refCode || typeof refCode !== "string") {
+    return NextResponse.json({ error: "Missing refCode" }, { status: 400 });
+  }
+
+  const normalized = normalizeUsername(refCode);
   if (!normalized) {
-    return NextResponse.json({ error: "Invalid username" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid refCode" }, { status: 400 });
   }
 
   const safeRole = role === "admin" ? "admin" : "affiliate";
-  const email = `${normalized}@affiliate.getscora.app`;
   const tempPassword = generateTempPassword();
 
   const { data: userData, error: userError } = await adminClient.auth.admin.createUser({
@@ -66,5 +69,5 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: profileError.message }, { status: 400 });
   }
 
-  return NextResponse.json({ email, tempPassword, username: normalized });
+  return NextResponse.json({ email, tempPassword, refCode: normalized });
 }
