@@ -188,6 +188,22 @@ export default function Home() {
 
     if (error) {
       setLoginError("Inloggen mislukt. Controleer je gegevens.");
+      return;
+    }
+
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData.session?.user?.id;
+    if (userId) {
+      const { data: profileData, error: profileError } = await supabase
+        .from("profiles")
+        .select("id, username, role, must_change_password")
+        .eq("id", userId)
+        .single();
+
+      if (profileError || !profileData) {
+        await supabase.auth.signOut();
+        setLoginError("Account niet gevonden. Neem contact op met support.");
+      }
     }
   };
 
