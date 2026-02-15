@@ -17,6 +17,8 @@ type AffiliateStat = {
   referrals_count: number;
 };
 
+type PageKey = "dashboard" | "payouts" | "settings" | "admin";
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("nl-NL", {
     style: "currency",
@@ -41,10 +43,47 @@ function getMonthLabel(monthKey: string) {
   }).format(date);
 }
 
+function IconDashboard() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 12h8V3H3v9Zm10 9h8v-6h-8v6ZM3 21h8v-6H3v6Zm10-9h8V3h-8v9Z" />
+    </svg>
+  );
+}
+
+function IconPayout() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M3 7h18M5 7V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2M5 7v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7" />
+      <path d="M8 12h4" />
+      <path d="M8 16h8" />
+    </svg>
+  );
+}
+
+function IconSettings() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
+      <path d="M19.4 15a1.6 1.6 0 0 0 .32 1.76l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.76-.32 1.6 1.6 0 0 0-1 1.46V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.46 1.6 1.6 0 0 0-1.76.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.6 1.6 0 0 0 .32-1.76 1.6 1.6 0 0 0-1.46-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.46-1 1.6 1.6 0 0 0-.32-1.76l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.6 1.6 0 0 0 1.76.32h0A1.6 1.6 0 0 0 9 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.46h0a1.6 1.6 0 0 0 1.76-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.76v0a1.6 1.6 0 0 0 1.46 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.46 1Z" />
+    </svg>
+  );
+}
+
+function IconAdmin() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" />
+      <path d="M4 20a8 8 0 0 1 16 0" />
+    </svg>
+  );
+}
+
 export default function Home() {
   const [sessionLoading, setSessionLoading] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<AffiliateStat[]>([]);
+  const [activePage, setActivePage] = useState<PageKey>("dashboard");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState<string | null>(null);
@@ -291,9 +330,9 @@ export default function Home() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-[#f4f3ef]">
+      <div className="min-h-screen bg-[#f2f2f2]">
         <div className="mx-auto flex min-h-screen w-full max-w-5xl items-center px-6 py-16">
-          <div className="grid w-full gap-10 rounded-[32px] border border-zinc-200 bg-white p-10 shadow-[0_20px_50px_rgba(15,23,42,0.08)] lg:grid-cols-[1.1fr_1fr]">
+          <div className="grid w-full gap-10 rounded-[28px] border border-zinc-200 bg-white p-10 shadow-[0_20px_50px_rgba(15,23,42,0.08)] lg:grid-cols-[1.1fr_1fr]">
             <div className="flex flex-col justify-center gap-6">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-zinc-400">
@@ -303,7 +342,7 @@ export default function Home() {
                   Welkom terug
                 </h1>
                 <p className="mt-2 text-sm text-zinc-500">
-                  Log in om je referrals, omzet en groei te beheren.
+                  Log in om je referrals, payouts en prestaties te beheren.
                 </p>
               </div>
               <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5 text-sm text-zinc-600">
@@ -344,7 +383,7 @@ export default function Home() {
                     value={loginEmail}
                     onChange={(event) => setLoginEmail(event.target.value)}
                     placeholder="jij@scora.app"
-                    className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
+                    className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-[#ccff00]"
                   />
                 </div>
                 <div className="grid gap-2">
@@ -361,7 +400,7 @@ export default function Home() {
                     value={loginPassword}
                     onChange={(event) => setLoginPassword(event.target.value)}
                     placeholder="••••••••"
-                    className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-zinc-400"
+                    className="h-11 rounded-xl border border-zinc-200 bg-white px-4 text-sm text-zinc-900 shadow-sm outline-none focus:border-[#ccff00]"
                   />
                 </div>
                 {loginError ? (
@@ -371,7 +410,7 @@ export default function Home() {
                 ) : null}
                 <button
                   type="submit"
-                  className="h-11 rounded-xl bg-zinc-900 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                  className="h-11 rounded-xl bg-[#111111] text-sm font-semibold text-white transition hover:bg-black"
                 >
                   Inloggen
                 </button>
@@ -384,7 +423,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f4f3ef] text-zinc-900">
+    <div className="min-h-screen bg-[#f2f2f2] text-zinc-900">
       {profile.must_change_password && passwordModal ? (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-6">
           <form
@@ -421,7 +460,7 @@ export default function Home() {
             <button
               type="submit"
               disabled={passwordSaving}
-              className="mt-4 h-11 w-full rounded-xl bg-zinc-900 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
+              className="mt-4 h-11 w-full rounded-xl bg-[#111111] text-sm font-semibold text-white transition hover:bg-black disabled:opacity-60"
             >
               {passwordSaving ? "Opslaan..." : "Wachtwoord opslaan"}
             </button>
@@ -431,31 +470,60 @@ export default function Home() {
 
       <div className="flex min-h-screen">
         <aside className="hidden w-72 flex-col border-r border-zinc-200 bg-white px-6 py-8 lg:flex">
-          <div className="text-sm font-semibold uppercase tracking-[0.3em] text-zinc-700">
-            Scora
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ccff00] text-xs font-bold text-black">
+              S
+            </div>
+            <div className="text-sm font-semibold text-zinc-900">Scora</div>
           </div>
-          <div className="mt-6 rounded-2xl bg-zinc-50 p-4 text-xs text-zinc-500">
-            <p className="text-zinc-900">Affiliate center</p>
-            <p className="mt-2">
-              Verdien €5 per actieve referral. Volg je groei in realtime.
-            </p>
-          </div>
+          <p className="mt-3 text-xs text-zinc-400">Affiliate dashboard</p>
           <nav className="mt-8 grid gap-2 text-sm text-zinc-600">
-            <button className="rounded-xl bg-zinc-100 px-3 py-2 text-left text-zinc-900">
+            <button
+              onClick={() => setActivePage("dashboard")}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
+                activePage === "dashboard"
+                  ? "bg-[#f7f7f7] text-zinc-900"
+                  : "hover:bg-[#f7f7f7]"
+              }`}
+            >
+              <IconDashboard />
               Dashboard
             </button>
-            <button className="rounded-xl px-3 py-2 text-left hover:bg-zinc-100">
-              Referrals
+            <button
+              onClick={() => setActivePage("payouts")}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
+                activePage === "payouts"
+                  ? "bg-[#f7f7f7] text-zinc-900"
+                  : "hover:bg-[#f7f7f7]"
+              }`}
+            >
+              <IconPayout />
+              Payouts
             </button>
-            <button className="rounded-xl px-3 py-2 text-left hover:bg-zinc-100">
-              Earnings
-            </button>
-            <button className="rounded-xl px-3 py-2 text-left hover:bg-zinc-100">
-              Analytics
-            </button>
-            <button className="rounded-xl px-3 py-2 text-left hover:bg-zinc-100">
+            <button
+              onClick={() => setActivePage("settings")}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
+                activePage === "settings"
+                  ? "bg-[#f7f7f7] text-zinc-900"
+                  : "hover:bg-[#f7f7f7]"
+              }`}
+            >
+              <IconSettings />
               Settings
             </button>
+            {profile.role === "admin" ? (
+              <button
+                onClick={() => setActivePage("admin")}
+                className={`flex items-center gap-3 rounded-xl px-3 py-2 text-left transition ${
+                  activePage === "admin"
+                    ? "bg-[#f7f7f7] text-zinc-900"
+                    : "hover:bg-[#f7f7f7]"
+                }`}
+              >
+                <IconAdmin />
+                Admin
+              </button>
+            ) : null}
           </nav>
           <div className="mt-auto rounded-2xl border border-zinc-200 bg-white p-4 text-xs text-zinc-500">
             <p className="text-zinc-900">Logged in</p>
@@ -472,7 +540,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-center gap-3 text-sm text-zinc-600">
-              <span className="rounded-full bg-zinc-100 px-3 py-1">
+              <span className="rounded-full bg-[#ccff00] px-3 py-1 text-xs font-semibold text-black">
                 {profile.role}
               </span>
               <button
@@ -485,184 +553,240 @@ export default function Home() {
           </header>
 
           <main className="flex-1 px-6 py-6">
-            <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-              <section className="grid gap-6">
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-xs uppercase tracking-wide text-zinc-400">
-                      Referrals (totaal)
-                    </p>
-                    <p className="mt-2 text-2xl font-semibold text-zinc-900">
-                      {totals.totalReferrals}
-                    </p>
-                    <p className="mt-2 text-xs text-emerald-600">+12% deze maand</p>
-                  </div>
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-xs uppercase tracking-wide text-zinc-400">
-                      Inkomsten deze maand
-                    </p>
-                    <p className="mt-2 text-2xl font-semibold text-zinc-900">
-                      {formatCurrency(totals.monthlyEarnings)}
-                    </p>
-                    <p className="mt-2 text-xs text-emerald-600">+8% vs vorige maand</p>
-                  </div>
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-4">
-                    <p className="text-xs uppercase tracking-wide text-zinc-400">
-                      Totaal verdiend
-                    </p>
-                    <p className="mt-2 text-2xl font-semibold text-zinc-900">
-                      {formatCurrency(totals.totalEarnings)}
-                    </p>
-                    <p className="mt-2 text-xs text-zinc-500">Sinds start</p>
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-zinc-200 bg-white p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-lg font-semibold text-zinc-900">
-                        Referral groei
-                      </h2>
-                      <p className="text-sm text-zinc-500">
-                        Laatste 6 maanden overzicht.
+            {activePage === "dashboard" ? (
+              <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+                <section className="grid gap-6">
+                  <div className="grid gap-4 sm:grid-cols-3">
+                    <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+                      <p className="text-xs uppercase tracking-wide text-zinc-400">
+                        Referrals
                       </p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">
+                        {totals.totalReferrals}
+                      </p>
+                      <p className="mt-2 text-xs text-emerald-600">+12% deze maand</p>
                     </div>
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-500">
-                      MRR: €{COMMISSION_PER_REFERRAL}
-                    </span>
+                    <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+                      <p className="text-xs uppercase tracking-wide text-zinc-400">
+                        Inkomsten maand
+                      </p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">
+                        {formatCurrency(totals.monthlyEarnings)}
+                      </p>
+                      <p className="mt-2 text-xs text-emerald-600">+8% vs vorige maand</p>
+                    </div>
+                    <div className="rounded-2xl border border-zinc-200 bg-white p-4">
+                      <p className="text-xs uppercase tracking-wide text-zinc-400">
+                        Totaal verdiend
+                      </p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">
+                        {formatCurrency(totals.totalEarnings)}
+                      </p>
+                      <p className="mt-2 text-xs text-zinc-500">Sinds start</p>
+                    </div>
                   </div>
-                  <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
-                    <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
-                      <svg viewBox="0 0 280 100" className="h-40 w-full">
-                        <polyline
-                          fill="none"
-                          stroke="#111827"
-                          strokeWidth="2"
-                          points={chartPoints}
-                        />
-                      </svg>
+
+                  <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="text-lg font-semibold text-zinc-900">
+                          Referral groei
+                        </h2>
+                        <p className="text-sm text-zinc-500">
+                          Laatste 6 maanden overzicht.
+                        </p>
+                      </div>
+                      <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-500">
+                        MRR: €{COMMISSION_PER_REFERRAL}
+                      </span>
                     </div>
-                    <div className="grid gap-3">
-                      {stats.slice(0, 4).map((item) => (
+                    <div className="mt-6 grid gap-6 lg:grid-cols-[2fr_1fr]">
+                      <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
+                        <svg viewBox="0 0 280 100" className="h-40 w-full">
+                          <polyline
+                            fill="none"
+                            stroke="#111827"
+                            strokeWidth="2"
+                            points={chartPoints}
+                          />
+                        </svg>
+                      </div>
+                      <div className="grid gap-3">
+                        {stats.slice(0, 4).map((item) => (
+                          <div
+                            key={item.month}
+                            className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm"
+                          >
+                            <p className="text-xs text-zinc-500">
+                              {getMonthLabel(item.month)}
+                            </p>
+                            <p className="mt-2 text-lg font-semibold text-zinc-900">
+                              {item.referrals_count} referrals
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-lg font-semibold text-zinc-900">
+                        Maandrapport
+                      </h2>
+                      <button className="text-sm text-zinc-500">Export</button>
+                    </div>
+                    <div className="mt-4 grid gap-3">
+                      {stats.map((item) => (
                         <div
                           key={item.month}
-                          className="rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm"
+                          className="flex items-center justify-between rounded-xl border border-zinc-100 px-4 py-3 text-sm text-zinc-600"
                         >
-                          <p className="text-xs text-zinc-500">
-                            {getMonthLabel(item.month)}
-                          </p>
-                          <p className="mt-2 text-lg font-semibold text-zinc-900">
-                            {item.referrals_count} referrals
-                          </p>
+                          <span>{getMonthLabel(item.month)}</span>
+                          <span>{item.referrals_count} referrals</span>
+                          <span className="font-semibold text-zinc-900">
+                            {formatCurrency(item.referrals_count * COMMISSION_PER_REFERRAL)}
+                          </span>
                         </div>
                       ))}
+                      {stats.length === 0 ? (
+                        <p className="text-sm text-zinc-500">
+                          Voeg stats toe in Supabase om data te zien.
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                </section>
+
+                <aside className="grid gap-6">
+                  <div className="rounded-2xl border border-zinc-200 bg-white p-5">
+                    <h2 className="text-lg font-semibold text-zinc-900">
+                      Quick actions
+                    </h2>
+                    <div className="mt-4 grid gap-2 text-sm text-zinc-600">
+                      <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
+                        Referral link kopieren
+                      </button>
+                      <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
+                        Payout instellingen
+                      </button>
+                      <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
+                        Support aanvragen
+                      </button>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            ) : null}
+
+            {activePage === "payouts" ? (
+              <div className="grid gap-6">
+                <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+                  <h2 className="text-lg font-semibold text-zinc-900">
+                    Payouts
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    Overzicht van je uitbetalingen en saldi.
+                  </p>
+                  <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                      <p className="text-xs text-zinc-500">Beschikbaar saldo</p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">
+                        {formatCurrency(totals.totalEarnings)}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                      <p className="text-xs text-zinc-500">Uitbetaald</p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">€0</p>
+                    </div>
+                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
+                      <p className="text-xs text-zinc-500">Volgende payout</p>
+                      <p className="mt-2 text-2xl font-semibold text-zinc-900">15 mei</p>
                     </div>
                   </div>
                 </div>
+              </div>
+            ) : null}
 
+            {activePage === "settings" ? (
+              <div className="grid gap-6">
                 <div className="rounded-2xl border border-zinc-200 bg-white p-6">
-                  <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-zinc-900">
-                      Maandrapport
-                    </h2>
-                    <button className="text-sm text-zinc-500">Export</button>
+                  <h2 className="text-lg font-semibold text-zinc-900">
+                    Settings
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    Beheer je profiel, payout info en meldingen.
+                  </p>
+                  <div className="mt-6 grid gap-4">
+                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
+                      <p className="text-zinc-900">Account</p>
+                      <p className="mt-2">{profile.username}</p>
+                    </div>
+                    <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
+                      <p className="text-zinc-900">E-mail</p>
+                      <p className="mt-2">Gebruik het e-mailadres waarmee je inlogt.</p>
+                    </div>
                   </div>
-                  <div className="mt-4 grid gap-3">
-                    {stats.map((item) => (
-                      <div
-                        key={item.month}
-                        className="flex items-center justify-between rounded-xl border border-zinc-100 px-4 py-3 text-sm text-zinc-600"
-                      >
-                        <span>{getMonthLabel(item.month)}</span>
-                        <span>{item.referrals_count} referrals</span>
-                        <span className="font-semibold text-zinc-900">
-                          {formatCurrency(item.referrals_count * COMMISSION_PER_REFERRAL)}
-                        </span>
-                      </div>
-                    ))}
-                    {stats.length === 0 ? (
-                      <p className="text-sm text-zinc-500">
-                        Voeg stats toe in Supabase om data te zien.
+                </div>
+              </div>
+            ) : null}
+
+            {activePage === "admin" && profile.role === "admin" ? (
+              <div className="grid gap-6">
+                <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+                  <h2 className="text-lg font-semibold text-zinc-900">
+                    Admin panel
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    Maak een nieuw account aan met email + ref code.
+                  </p>
+                  <form className="mt-4 grid gap-3 max-w-md" onSubmit={handleAdminCreate}>
+                    <input
+                      value={adminEmail}
+                      onChange={(event) => setAdminEmail(event.target.value)}
+                      placeholder="E-mailadres"
+                      className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
+                      required
+                      type="email"
+                    />
+                    <input
+                      value={adminRefCode}
+                      onChange={(event) => setAdminRefCode(event.target.value)}
+                      placeholder="Gebruikersnaam / ref code"
+                      className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
+                      required
+                    />
+                    <select
+                      value={adminRole}
+                      onChange={(event) => setAdminRole(event.target.value)}
+                      className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
+                    >
+                      <option value="affiliate">Affiliate</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                    {adminError ? (
+                      <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">
+                        {adminError}
                       </p>
                     ) : null}
-                  </div>
+                    {adminResult ? (
+                      <div className="rounded-lg bg-[#f7ffd9] px-3 py-2 text-xs text-zinc-800">
+                        <p>Account aangemaakt voor {adminResult.refCode}</p>
+                        <p>Email: {adminResult.email}</p>
+                        <p>Tijdelijk wachtwoord: {adminResult.tempPassword}</p>
+                      </div>
+                    ) : null}
+                    <button
+                      type="submit"
+                      disabled={adminLoading}
+                      className="h-11 rounded-xl bg-[#111111] text-sm font-semibold text-white transition hover:bg-black disabled:opacity-60"
+                    >
+                      {adminLoading ? "Bezig..." : "Account aanmaken"}
+                    </button>
+                  </form>
                 </div>
-              </section>
-
-              <aside className="grid gap-6">
-                {profile.role === "admin" ? (
-                  <div className="rounded-2xl border border-zinc-200 bg-white p-5">
-                    <h2 className="text-lg font-semibold text-zinc-900">
-                      Admin panel
-                    </h2>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      Maak een nieuw account aan met email + ref code.
-                    </p>
-                    <form className="mt-4 grid gap-3" onSubmit={handleAdminCreate}>
-                      <input
-                        value={adminEmail}
-                        onChange={(event) => setAdminEmail(event.target.value)}
-                        placeholder="E-mailadres"
-                        className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
-                        required
-                        type="email"
-                      />
-                      <input
-                        value={adminRefCode}
-                        onChange={(event) => setAdminRefCode(event.target.value)}
-                        placeholder="Gebruikersnaam / ref code"
-                        className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
-                        required
-                      />
-                      <select
-                        value={adminRole}
-                        onChange={(event) => setAdminRole(event.target.value)}
-                        className="h-11 rounded-xl border border-zinc-200 px-4 text-sm"
-                      >
-                        <option value="affiliate">Affiliate</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                      {adminError ? (
-                        <p className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-600">
-                          {adminError}
-                        </p>
-                      ) : null}
-                      {adminResult ? (
-                        <div className="rounded-lg bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-                          <p>Account aangemaakt voor {adminResult.refCode}</p>
-                          <p>Email: {adminResult.email}</p>
-                          <p>Tijdelijk wachtwoord: {adminResult.tempPassword}</p>
-                        </div>
-                      ) : null}
-                      <button
-                        type="submit"
-                        disabled={adminLoading}
-                        className="h-11 rounded-xl bg-zinc-900 text-sm font-semibold text-white transition hover:bg-zinc-800 disabled:opacity-60"
-                      >
-                        {adminLoading ? "Bezig..." : "Account aanmaken"}
-                      </button>
-                    </form>
-                  </div>
-                ) : null}
-
-                <div className="rounded-2xl border border-zinc-200 bg-white p-5">
-                  <h2 className="text-lg font-semibold text-zinc-900">
-                    Snelle acties
-                  </h2>
-                  <div className="mt-4 grid gap-2 text-sm text-zinc-600">
-                    <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
-                      Referral link kopieren
-                    </button>
-                    <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
-                      Payout instellingen
-                    </button>
-                    <button className="rounded-xl border border-zinc-200 px-3 py-2 text-left hover:bg-zinc-50">
-                      Support aanvragen
-                    </button>
-                  </div>
-                </div>
-              </aside>
-            </div>
+              </div>
+            ) : null}
           </main>
         </div>
       </div>
